@@ -8,6 +8,7 @@ import {
   Page,
   FacetMode,
 } from './model';
+import { Entity, formattedEntity } from './formatUtils';
 
 export type AcceptedLanguage = 'es' | 'ca' | 'en' | 'fr';
 
@@ -100,7 +101,9 @@ export class CoeliApi {
     const getSearchResponse = await this.coeliFetch<
       GetSearchResponse<CoeliEntity>,
       GetSearchResponse<T>
-    >(partialUrl, language, 'GET', mapFunction);
+    >(partialUrl, language, 'GET', formattedEntity.apply(language)).then(
+      mapFunction
+    );
     return {
       ...getSearchResponse,
       url:
@@ -192,8 +195,8 @@ export class CoeliApi {
       `/${entity}/slugs/${slug}`,
       language,
       'GET',
-      mapFunction
-    );
+      formattedEntity.apply(language)
+    ).then(mapFunction);
   };
   getEntityById = async <T>(
     language: AcceptedLanguage,
@@ -205,8 +208,8 @@ export class CoeliApi {
       `/${entity}/${id}`,
       language,
       'GET',
-      mapFunction
-    );
+      formattedEntity.apply(language)
+    ).then(mapFunction);
   };
   getEntities = async <T>(
     language: AcceptedLanguage,
@@ -217,7 +220,12 @@ export class CoeliApi {
       GetResponse<CoeliEntity>,
       GetResponse<T>
     >(`/${entity}/`, language, 'GET', (x: GetResponse<CoeliEntity>) => {
-      return { ...x, entities: x.entities.map(mapFunction) };
+      return {
+        ...x,
+        entities: x.entities
+          .map((e) => formattedEntity(language, e as Entity))
+          .map(mapFunction),
+      };
     });
     return coeliEntityGetResponse;
   };
