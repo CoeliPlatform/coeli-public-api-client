@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
     "target": "es2015",
     "declaration": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "lib": [ "dom", "es5", "es6", "es7", "es2015.promise" ]
   },
   "include": [
     "src/**/*"

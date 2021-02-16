@@ -74,9 +74,6 @@ export interface Page {
     offset: number;
     total: number;
 }
-export interface CoeliEntity {
-    [prop: string]: any;
-}
 export interface GetResponse<T> {
     entities: T[];
     page: Page;

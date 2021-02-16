@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import {
-  CoeliEntity,
   ControlledSearch,
   ControlledSearchResponse,
   GetResponse,
@@ -17,8 +16,8 @@ export class CoeliApi {
     this.tenant = tenant;
     this.token = token;
   }
-  private tenant: string;
-  private token: string;
+  private readonly tenant: string;
+  private readonly token: string;
 
   private coeliFetch = async <R, T>(
     partialUrl: string,
@@ -76,7 +75,7 @@ export class CoeliApi {
   getControlledSearch = async <T>(
     language: AcceptedLanguage,
     controlledSearchResponse: ControlledSearchResponse,
-    mapFunction: (gsr: GetSearchResponse<CoeliEntity>) => GetSearchResponse<T>,
+    mapFunction: (gsr: GetSearchResponse<Entity>) => GetSearchResponse<T>,
     facets?: string[],
     page?: Page,
     facetModes?: FacetMode[]
@@ -99,22 +98,25 @@ export class CoeliApi {
           }`
     }${facetModes ? '&facetMode=' + facetModes.join(',') : ''}`;
     const getSearchResponse = await this.coeliFetch<
-      GetSearchResponse<CoeliEntity>,
-      GetSearchResponse<T>
-    >(partialUrl, language, 'GET', formattedEntity.apply(language)).then(
-      mapFunction
-    );
-    return {
+      GetSearchResponse<Entity>,
+      GetSearchResponse<Entity>
+    >(partialUrl, language, 'GET', (x) => x);
+    return mapFunction({
       ...getSearchResponse,
+      ...{
+        entities: getSearchResponse.entities.map((e) =>
+          formattedEntity(language, e)
+        ),
+      },
       url:
         '/' + controlledSearchResponse.self.href.split('/').slice(3).join('/'),
-    };
+    });
   };
   createAndGetControlledSearch = async <T>(
     language: AcceptedLanguage,
     entity: string,
     search: ControlledSearch,
-    mapFunction: (gsr: GetSearchResponse<CoeliEntity>) => GetSearchResponse<T>,
+    mapFunction: (gsr: GetSearchResponse<Entity>) => GetSearchResponse<T>,
     facets?: string[],
     page?: Page,
     facetModes?: FacetMode[]
@@ -137,7 +139,7 @@ export class CoeliApi {
     language: AcceptedLanguage,
     entity: string,
     search: ControlledSearch,
-    mapFunction: (gsr: GetSearchResponse<CoeliEntity>) => GetSearchResponse<T>,
+    mapFunction: (gsr: GetSearchResponse<Entity>) => GetSearchResponse<T>,
     facets?: string[],
     page?: Page
   ): Promise<GetSearchResponse<T>> => {
@@ -189,37 +191,37 @@ export class CoeliApi {
     language: AcceptedLanguage,
     entity: string,
     slug: string,
-    mapFunction: (ce: CoeliEntity) => T
-  ): Promise<CoeliEntity> => {
-    return await this.coeliFetch<CoeliEntity, T>(
+    mapFunction: (ce: Entity) => T
+  ): Promise<T> => {
+    return await this.coeliFetch<Entity, T>(
       `/${entity}/slugs/${slug}`,
       language,
       'GET',
-      formattedEntity.apply(language)
-    ).then(mapFunction);
+      (e) => mapFunction(formattedEntity(language, e))
+    );
   };
   getEntityById = async <T>(
     language: AcceptedLanguage,
     entity: string,
     id: string,
-    mapFunction: (ce: CoeliEntity) => T
-  ): Promise<CoeliEntity> => {
-    return await this.coeliFetch<CoeliEntity, T>(
+    mapFunction: (ce: Entity) => T
+  ): Promise<T> => {
+    return await this.coeliFetch<Entity, T>(
       `/${entity}/${id}`,
       language,
       'GET',
-      formattedEntity.apply(language)
-    ).then(mapFunction);
+      (e) => mapFunction(formattedEntity(language, e))
+    );
   };
   getEntities = async <T>(
     language: AcceptedLanguage,
     entity: string,
-    mapFunction: (ce: CoeliEntity) => T
+    mapFunction: (ce: Entity) => T
   ): Promise<GetResponse<T>> => {
     const coeliEntityGetResponse = await this.coeliFetch<
-      GetResponse<CoeliEntity>,
+      GetResponse<Entity>,
       GetResponse<T>
-    >(`/${entity}/`, language, 'GET', (x: GetResponse<CoeliEntity>) => {
+    >(`/${entity}/`, language, 'GET', (x: GetResponse<Entity>) => {
       return {
         ...x,
         entities: x.entities

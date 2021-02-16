@@ -22,13 +22,13 @@ export interface TimeSpanInterval {
 export type TimeSpanValue = Reference | TimeSpan | TimeSpanInterval;
 
 export type ChronoUnit =
-| 'Days'
-| 'Weeks'
-| 'Months'
-| 'Years'
-| 'Decades'
-| 'Centuries'
-| 'Millennia';
+  | 'Days'
+  | 'Weeks'
+  | 'Months'
+  | 'Years'
+  | 'Decades'
+  | 'Centuries'
+  | 'Millennia';
 
 export interface TimeSearchValue {
   value: number;
@@ -36,41 +36,41 @@ export interface TimeSearchValue {
 }
 
 export type SingleConditionValue =
-| boolean
-| string
-| Reference
-| TimeSpanValue
-| TimeSearchValue;
+  | boolean
+  | string
+  | Reference
+  | TimeSpanValue
+  | TimeSearchValue;
 
 export type ConditionValue = SingleConditionValue | SingleConditionValue[];
 
 export type Operator =
-| '='
-| 'belongs_to'
-| 'contains'
-| 'exactly_contains'
-| '>'
-| '<'
-| 'between_dates'
-| 'in_date'
-| 'between_periods'
-| 'in_period'
-| 'before_date'
-| 'before_n_date'
-| 'after_date'
-| 'after_n_date'
-| 'exactly_in_period'
-| 'is_defined';
+  | '='
+  | 'belongs_to'
+  | 'contains'
+  | 'exactly_contains'
+  | '>'
+  | '<'
+  | 'between_dates'
+  | 'in_date'
+  | 'between_periods'
+  | 'in_period'
+  | 'before_date'
+  | 'before_n_date'
+  | 'after_date'
+  | 'after_n_date'
+  | 'exactly_in_period'
+  | 'is_defined';
 
 export type FacetMode = 'Equals' | 'BelongsTo';
 
 export type ControlledSearchConditionType =
-| 'SimpleEntitySearchCondition'
-| 'OrEntitySearchCondition';
+  | 'SimpleEntitySearchCondition'
+  | 'OrEntitySearchCondition';
 
 export type ControlledSearchCondition =
-| OrControlledSearchCondition
-| SimpleControlledSearchCondition;
+  | OrControlledSearchCondition
+  | SimpleControlledSearchCondition;
 
 export interface OrControlledSearchCondition {
   $type: ControlledSearchConditionType;
@@ -121,9 +121,9 @@ export interface Page {
   total: number;
 }
 
-export interface CoeliEntity {
-  [prop: string]: any;
-}
+// export interface CoeliEntity {
+//   [prop: string]: any;
+// }
 
 export interface GetResponse<T> {
   entities: T[];
@@ -136,4 +136,3 @@ export interface GetSearchResponse<T> extends GetResponse<T> {
   sortConditions: SortConditions;
   url: string;
 }
-
