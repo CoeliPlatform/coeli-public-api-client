@@ -2,14 +2,14 @@
 Typescript/JavaScript client to access Coeli public api easily.
 
 ## Install:
-`npm install -S coeli-public-api-client`
+`npm install -S coeli-client`
 or
-`yarn add coeli-public-api-client`
+`yarn add coeli-client`
 
 ## Import
 
 ```javascript
-import { CoeliApi } from 'coeli-public-api-client';
+import { CoeliApi } from 'coeli-client';
  
 const api = new CoeliApi(
     'TENANT',
@@ -18,7 +18,7 @@ const api = new CoeliApi(
  ```
 or
 ```javascript
-var coeliPublicApiClient = require('coeli-public-api-client')
+var coeliPublicApiClient = require('coeli-client')
 
 var api = new coeliPublicApiClient.CoeliApi('TENANT', 'auth_token')
 ```
