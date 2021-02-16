@@ -1,6 +1,6 @@
 {
   "name": "coeli-public-api-client",
-  "version": "1.0.0-rc",
+  "version": "1.0.0-rc-2",
   "description": "Client to easily interact with Coeli public api",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

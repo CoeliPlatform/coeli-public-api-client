@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const isomorphic_fetch_1 = require("isomorphic-fetch");
+const formatUtils_1 = require("./formatUtils");
 class CoeliApi {
     constructor(tenant, token) {
         this.coeliFetch = (partialUrl, language, method = 'GET', mapFunction, body) => __awaiter(this, void 0, void 0, function* () {
@@ -49,7 +50,7 @@ class CoeliApi {
                 : `/?${page
                     ? `limit=${page.limit}&offset=${page.offset}`
                     : 'limit=25&offset=0'}`}${facetModes ? '&facetMode=' + facetModes.join(',') : ''}`;
-            const getSearchResponse = yield this.coeliFetch(partialUrl, language, 'GET', mapFunction);
+            const getSearchResponse = yield this.coeliFetch(partialUrl, language, 'GET', formatUtils_1.formattedEntity.apply(language)).then(mapFunction);
             return Object.assign({}, getSearchResponse, { url: '/' + controlledSearchResponse.self.href.split('/').slice(3).join('/') });
         });
         this.createAndGetControlledSearch = (language, entity, search, mapFunction, facets, page, facetModes) => __awaiter(this, void 0, void 0, function* () {
@@ -80,14 +81,16 @@ class CoeliApi {
             return Object.assign({}, firstBatch, { entities: coeliEntities });
         });
         this.getEntityBySlug = (language, entity, slug, mapFunction) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.coeliFetch(`/${entity}/slugs/${slug}`, language, 'GET', mapFunction);
+            return yield this.coeliFetch(`/${entity}/slugs/${slug}`, language, 'GET', formatUtils_1.formattedEntity.apply(language)).then(mapFunction);
         });
         this.getEntityById = (language, entity, id, mapFunction) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.coeliFetch(`/${entity}/${id}`, language, 'GET', mapFunction);
+            return yield this.coeliFetch(`/${entity}/${id}`, language, 'GET', formatUtils_1.formattedEntity.apply(language)).then(mapFunction);
         });
         this.getEntities = (language, entity, mapFunction) => __awaiter(this, void 0, void 0, function* () {
             const coeliEntityGetResponse = yield this.coeliFetch(`/${entity}/`, language, 'GET', (x) => {
-                return Object.assign({}, x, { entities: x.entities.map(mapFunction) });
+                return Object.assign({}, x, { entities: x.entities
+                        .map((e) => formatUtils_1.formattedEntity(language, e))
+                        .map(mapFunction) });
             });
             return coeliEntityGetResponse;
         });
@@ -95,3 +98,4 @@ class CoeliApi {
         this.token = token;
     }
 }
+exports.CoeliApi = CoeliApi;
