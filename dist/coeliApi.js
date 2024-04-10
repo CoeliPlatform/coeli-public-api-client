@@ -30,10 +30,6 @@ class CoeliApi {
                 headers,
                 method,
             };
-            console.log(url);
-            console.log(requestInit.body);
-            console.log(requestInit.headers);
-            console.log(requestInit.method);
             try {
                 const response = yield (0, isomorphic_fetch_1.default)(url, requestInit);
                 if (response.status >= 400) {
@@ -62,14 +58,12 @@ class CoeliApi {
             const getSearchResponse = yield this.coeliFetch(partialUrl, language, 'GET', (x) => x);
             return mapFunction(Object.assign(Object.assign(Object.assign({}, getSearchResponse), {
                 entities: getSearchResponse.entities.map((e) => (0, formatUtils_1.formattedEntity)(language, e)),
+                facets: (0, formatUtils_1.formattedFacets)(getSearchResponse.facets),
             }), { url: '/' + controlledSearchResponse.self.href.split('/').slice(3).join('/') }));
         });
         this.createAndGetControlledSearch = (language, entity, search, mapFunction, facets, page, facetModes) => __awaiter(this, void 0, void 0, function* () {
             const controlledSearchResponse = yield this.createControlledSearch(language, entity, search);
-            console.log(controlledSearchResponse);
-            const r = yield this.getControlledSearch(language, controlledSearchResponse, mapFunction, facets, page, facetModes);
-            console.log(r);
-            return r;
+            return yield this.getControlledSearch(language, controlledSearchResponse, mapFunction, facets, page, facetModes);
         });
         this.createControlledSearchAndGetAllItems = (language, entity, search, mapFunction, facets, page) => __awaiter(this, void 0, void 0, function* () {
             const controlledSearchResponse = yield this.createControlledSearch(language, entity, search);

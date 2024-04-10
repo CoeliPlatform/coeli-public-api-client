@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.formattedEntity = void 0;
+exports.formattedEntity = exports.formattedFacets = void 0;
 function getProperties(hasProperties) {
     const keysWithoutMetadata = hasProperties
         ? Object.keys(hasProperties).filter((p) => !p.startsWith('$'))
@@ -205,6 +205,25 @@ function isDatingInterval(value) {
 function isChronologicalPeriod(value) {
     return value.$metadata.$type.references === 'ChronologicalPeriod';
 }
+function formattedFacets(facets) {
+    if (!facets)
+        return facets;
+    let formatedFacet = {};
+    console.log(facets);
+    Object.keys(facets).forEach(key => {
+        console.log(key);
+        formatedFacet[key] = facets[key].map(item => {
+            if (item.value && item.value.label) {
+                console.log({ count: item.count, value: { href: item.value.href, label: { value: item.value.label } } });
+                return { count: item.count, value: { href: item.value.href, label: { value: item.value.label } } };
+            }
+            else
+                return item;
+        });
+    });
+    return formatedFacet;
+}
+exports.formattedFacets = formattedFacets;
 function formattedEntity(locale, e) {
     const props = getProperties(e);
     function loop(value) {

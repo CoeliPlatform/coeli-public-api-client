@@ -55,6 +55,7 @@ type PartialEntity = {
     $metadata: EntityMetadata;
 };
 export type Entity = PartialEntity & HasProperties;
+export declare function formattedFacets(facets: any): any;
 export declare function formattedEntity(locale: any, e: any): {
     $metadata: any;
 };

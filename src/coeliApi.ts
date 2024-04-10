@@ -7,7 +7,7 @@ import {
   Page,
   FacetMode,
 } from './model';
-import { Entity, formattedEntity } from './formatUtils';
+import { Entity, formattedEntity, formattedFacets } from './formatUtils';
 
 export type AcceptedLanguage = 'es' | 'ca' | 'en' | 'fr';
 
@@ -107,6 +107,7 @@ export class CoeliApi {
         entities: getSearchResponse.entities.map((e) =>
           formattedEntity(language, e)
         ),
+        facets: formattedFacets(getSearchResponse.facets),
       },
       url:
         '/' + controlledSearchResponse.self.href.split('/').slice(3).join('/'),
