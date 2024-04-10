@@ -26,7 +26,7 @@ export class CoeliApi {
     mapFunction: (r: R) => T,
     body?: object
   ): Promise<T> => {
-    const url = `https://app.coeli.cat/coeli/${this.tenant}${partialUrl}`;
+    const url = `https://api.coeli.cat/coeli/${this.tenant}${partialUrl}`;
 
     const headers: HeadersInit = {
       'Accept-Language': language,
@@ -84,14 +84,14 @@ export class CoeliApi {
       controlledSearchResponse.id
     }${
       facets
-        ? `/?${
+        ? `?${
             page
               ? `limit=${page.limit}&offset=${page.offset}`
               : 'limit=25&offset=0'
           }` +
           '&facet=' +
           facets.join(',')
-        : `/?${
+        : `?${
             page
               ? `limit=${page.limit}&offset=${page.offset}`
               : 'limit=25&offset=0'
@@ -216,19 +216,14 @@ export class CoeliApi {
   getEntities = async <T>(
     language: AcceptedLanguage,
     entity: string,
-    mapFunction: (ce: Entity) => T
-  ): Promise<GetResponse<T>> => {
-    const coeliEntityGetResponse = await this.coeliFetch<
-      GetResponse<Entity>,
-      GetResponse<T>
-    >(`/${entity}/`, language, 'GET', (x: GetResponse<Entity>) => {
-      return {
-        ...x,
-        entities: x.entities
-          .map((e) => formattedEntity(language, e as Entity))
-          .map(mapFunction),
-      };
-    });
-    return coeliEntityGetResponse;
+    mapFunction: (gsr: GetSearchResponse<Entity>) => GetSearchResponse<T>,
+  ): Promise<GetSearchResponse<T>> => {
+    const search = { conditions: []}
+    return await this.createAndGetControlledSearch(
+      language,
+      entity,
+      search,
+      mapFunction,
+    );
   };
 }

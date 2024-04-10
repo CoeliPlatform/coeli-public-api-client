@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.formattedEntity = void 0;
 function getProperties(hasProperties) {
     const keysWithoutMetadata = hasProperties
         ? Object.keys(hasProperties).filter((p) => !p.startsWith('$'))
@@ -207,6 +208,32 @@ function isChronologicalPeriod(value) {
 function formattedEntity(locale, e) {
     const props = getProperties(e);
     function loop(value) {
+        if (typeof value === "string") {
+            return value;
+        }
+        else if (value.indexSince || value.indexUntil) {
+            return value.label;
+        }
+        else if (Array.isArray(value)) {
+            return value.map((x) => loop(x));
+        }
+        const embOrRefProps = getProperties(value);
+        const res = {};
+        return embOrRefProps.reduce((prev, curr) => {
+            prev[curr.key] = loop(curr.value);
+            return prev;
+        }, {});
+    }
+    const result = {};
+    props
+        .map((x) => [x.key, loop(x.value)])
+        .forEach((x) => (result[x[0]] = x[1]));
+    return Object.assign({ $metadata: e.$metadata }, result);
+}
+exports.formattedEntity = formattedEntity;
+function formattedEntity_EX(locale, e) {
+    const props = getProperties(e);
+    function loop(value) {
         if (isSingleValue(value)) {
             if (isPrimitiveValue(value)) {
                 if (isDecimal(value))
@@ -272,4 +299,3 @@ function formattedEntity(locale, e) {
         .forEach((x) => (result[x[0]] = x[1]));
     return Object.assign({ $metadata: e.$metadata }, result);
 }
-exports.formattedEntity = formattedEntity;

@@ -1,4 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CoeliApi = void 0;
 var coeliApi_1 = require("./coeliApi");
-exports.CoeliApi = coeliApi_1.CoeliApi;
+Object.defineProperty(exports, "CoeliApi", { enumerable: true, get: function () { return coeliApi_1.CoeliApi; } });

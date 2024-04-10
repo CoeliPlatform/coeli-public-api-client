@@ -448,7 +448,31 @@ function isChronologicalPeriod(value: any): value is Reference {
   return value.$metadata.$type.references === 'ChronologicalPeriod';
 }
 
-export function formattedEntity(locale: AcceptedLanguage, e: Entity): Entity {
+export function formattedEntity(locale, e) {
+    const props = getProperties(e);
+    function loop(value) {
+        if (typeof value === "string") {
+          return value;
+        } else if (value.indexSince || value.indexUntil) {
+          return value.label;
+        } else if (Array.isArray(value)) {
+          return value.map((x) => loop(x));
+        }
+        const embOrRefProps = getProperties(value);
+        const res = {};
+        return embOrRefProps.reduce((prev, curr) => {
+            prev[curr.key] = loop(curr.value);
+            return prev;
+        }, {});     
+    }
+    const result = {};
+    props
+        .map((x) => [x.key, loop(x.value)])
+        .forEach((x) => (result[x[0]] = x[1]));
+    return Object.assign({ $metadata: e.$metadata }, result);
+}
+
+function formattedEntity_EX(locale: AcceptedLanguage, e: Entity): Entity {
   const props = getProperties(e);
 
   function loop(value: Value): any {

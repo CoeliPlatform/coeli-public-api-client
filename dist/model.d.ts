@@ -16,18 +16,18 @@ export interface TimeSpanInterval {
     description?: WithValue<string>;
     label?: WithValue<string>;
 }
-export declare type TimeSpanValue = Reference | TimeSpan | TimeSpanInterval;
-export declare type ChronoUnit = 'Days' | 'Weeks' | 'Months' | 'Years' | 'Decades' | 'Centuries' | 'Millennia';
+export type TimeSpanValue = Reference | TimeSpan | TimeSpanInterval;
+export type ChronoUnit = 'Days' | 'Weeks' | 'Months' | 'Years' | 'Decades' | 'Centuries' | 'Millennia';
 export interface TimeSearchValue {
     value: number;
     unit: ChronoUnit;
 }
-export declare type SingleConditionValue = boolean | string | Reference | TimeSpanValue | TimeSearchValue;
-export declare type ConditionValue = SingleConditionValue | SingleConditionValue[];
-export declare type Operator = '=' | 'belongs_to' | 'contains' | 'exactly_contains' | '>' | '<' | 'between_dates' | 'in_date' | 'between_periods' | 'in_period' | 'before_date' | 'before_n_date' | 'after_date' | 'after_n_date' | 'exactly_in_period' | 'is_defined';
-export declare type FacetMode = 'Equals' | 'BelongsTo';
-export declare type ControlledSearchConditionType = 'SimpleEntitySearchCondition' | 'OrEntitySearchCondition';
-export declare type ControlledSearchCondition = OrControlledSearchCondition | SimpleControlledSearchCondition;
+export type SingleConditionValue = boolean | string | Reference | TimeSpanValue | TimeSearchValue;
+export type ConditionValue = SingleConditionValue | SingleConditionValue[];
+export type Operator = '=' | 'belongs_to' | 'contains' | 'exactly_contains' | '>' | '<' | 'between_dates' | 'in_date' | 'between_periods' | 'in_period' | 'before_date' | 'before_n_date' | 'after_date' | 'after_n_date' | 'exactly_in_period' | 'is_defined';
+export type FacetMode = 'Equals' | 'BelongsTo';
+export type ControlledSearchConditionType = 'SimpleEntitySearchCondition' | 'OrEntitySearchCondition';
+export type ControlledSearchCondition = OrControlledSearchCondition | SimpleControlledSearchCondition;
 export interface OrControlledSearchCondition {
     $type: ControlledSearchConditionType;
     conditions: ControlledSearchCondition[];
@@ -39,7 +39,7 @@ export interface SimpleControlledSearchCondition {
     value: ConditionValue;
     default?: boolean;
 }
-export declare type Order = 'ASC' | 'DESC';
+export type Order = 'ASC' | 'DESC';
 export interface SortConditions {
     sort: Array<{
         name: string;

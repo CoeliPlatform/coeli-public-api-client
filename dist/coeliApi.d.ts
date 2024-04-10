@@ -1,6 +1,6 @@
-import { ControlledSearch, ControlledSearchResponse, GetResponse, GetSearchResponse, Page, FacetMode } from './model';
+import { ControlledSearch, ControlledSearchResponse, GetSearchResponse, Page, FacetMode } from './model';
 import { Entity } from './formatUtils';
-export declare type AcceptedLanguage = 'es' | 'ca' | 'en' | 'fr';
+export type AcceptedLanguage = 'es' | 'ca' | 'en' | 'fr';
 export declare class CoeliApi {
     constructor(tenant: string, token: string);
     private readonly tenant;
@@ -12,5 +12,5 @@ export declare class CoeliApi {
     createControlledSearchAndGetAllItems: <T>(language: AcceptedLanguage, entity: string, search: ControlledSearch, mapFunction: (gsr: GetSearchResponse<Entity>) => GetSearchResponse<T>, facets?: string[], page?: Page) => Promise<GetSearchResponse<T>>;
     getEntityBySlug: <T>(language: AcceptedLanguage, entity: string, slug: string, mapFunction: (ce: Entity) => T) => Promise<T>;
     getEntityById: <T>(language: AcceptedLanguage, entity: string, id: string, mapFunction: (ce: Entity) => T) => Promise<T>;
-    getEntities: <T>(language: AcceptedLanguage, entity: string, mapFunction: (ce: Entity) => T) => Promise<GetResponse<T>>;
+    getEntities: <T>(language: AcceptedLanguage, entity: string, mapFunction: (gsr: GetSearchResponse<Entity>) => GetSearchResponse<T>) => Promise<GetSearchResponse<T>>;
 }
