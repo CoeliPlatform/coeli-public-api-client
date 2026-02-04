@@ -26,7 +26,7 @@ export class CoeliApi {
     mapFunction: (r: R) => T,
     body?: object
   ): Promise<T> => {
-    const url = `https://app.coeli.cat/coeli/${this.tenant}${partialUrl}`;
+    const url = `https://backend-api.app.coeli.cat/coeli/${this.tenant}${partialUrl}`;
 
     const headers: HeadersInit = {
       'Accept-Language': language,

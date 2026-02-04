@@ -16,7 +16,7 @@ const formatUtils_1 = require("./formatUtils");
 class CoeliApi {
     constructor(tenant, token) {
         this.coeliFetch = (partialUrl, language, method = 'GET', mapFunction, body) => __awaiter(this, void 0, void 0, function* () {
-            const url = `https://app.coeli.cat/coeli/${this.tenant}${partialUrl}`;
+            const url = `https://backend-api.app.coeli.cat/coeli/${this.tenant}${partialUrl}`;
             const headers = {
                 'Accept-Language': language,
                 Authorization: `Authorization ${this.token}`,
