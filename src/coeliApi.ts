@@ -7,7 +7,7 @@ import {
   Page,
   FacetMode,
 } from './model';
-import { Entity, formattedEntity } from './formatUtils';
+import { Entity } from './formatUtils';
 
 export type AcceptedLanguage = 'es' | 'ca' | 'en' | 'fr';
 
@@ -26,7 +26,7 @@ export class CoeliApi {
     mapFunction: (r: R) => T,
     body?: object
   ): Promise<T> => {
-    const url = `https://app.coeli.cat/coeli/${this.tenant}${partialUrl}`;
+    const url = `https://api.coeli.cat/coeli/${this.tenant}${partialUrl}`;
 
     const headers: HeadersInit = {
       'Accept-Language': language,
@@ -84,14 +84,14 @@ export class CoeliApi {
       controlledSearchResponse.id
     }${
       facets
-        ? `/?${
+        ? `?${
             page
               ? `limit=${page.limit}&offset=${page.offset}`
               : 'limit=25&offset=0'
           }` +
           '&facet=' +
           facets.join(',')
-        : `/?${
+        : `?${
             page
               ? `limit=${page.limit}&offset=${page.offset}`
               : 'limit=25&offset=0'
@@ -101,13 +101,11 @@ export class CoeliApi {
       GetSearchResponse<Entity>,
       GetSearchResponse<Entity>
     >(partialUrl, language, 'GET', (x) => x);
+    // coeliFetch resolves undefined on request errors
+    if (!getSearchResponse) return undefined;
+    // api.coeli.cat already returns plain values, no formatting needed
     return mapFunction({
       ...getSearchResponse,
-      ...{
-        entities: getSearchResponse.entities.map((e) =>
-          formattedEntity(language, e)
-        ),
-      },
       url:
         '/' + controlledSearchResponse.self.href.split('/').slice(3).join('/'),
     });
@@ -197,7 +195,7 @@ export class CoeliApi {
       `/${entity}/slugs/${slug}`,
       language,
       'GET',
-      (e) => mapFunction(formattedEntity(language, e))
+      (e) => mapFunction(e)
     );
   };
   getEntityById = async <T>(
@@ -210,7 +208,7 @@ export class CoeliApi {
       `/${entity}/${id}`,
       language,
       'GET',
-      (e) => mapFunction(formattedEntity(language, e))
+      (e) => mapFunction(e)
     );
   };
   getEntities = async <T>(
@@ -224,9 +222,7 @@ export class CoeliApi {
     >(`/${entity}/`, language, 'GET', (x: GetResponse<Entity>) => {
       return {
         ...x,
-        entities: x.entities
-          .map((e) => formattedEntity(language, e as Entity))
-          .map(mapFunction),
+        entities: x.entities.map((e) => mapFunction(e as Entity)),
       };
     });
     return coeliEntityGetResponse;
