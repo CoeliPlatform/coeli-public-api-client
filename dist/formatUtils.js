@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.formatIsoDateText = formatIsoDateText;
+exports.formatDatingValue = formatDatingValue;
+exports.formattedEntity = formattedEntity;
 function getProperties(hasProperties) {
     const keysWithoutMetadata = hasProperties
         ? Object.keys(hasProperties).filter((p) => !p.startsWith('$'))
@@ -195,6 +198,18 @@ function fromIsoDate(text) {
         return createTokenNl(text);
     }
 }
+// Formats an ISO date text (yyyy-mm-dd) the same way formattedEntity does,
+// or returns undefined when the text is not an ISO date
+function formatIsoDateText(text, locale) {
+    return isIsoDate(text)
+        ? formatDate(fromIsoDate(text), locale)
+        : undefined;
+}
+// Formats a dating the same way formattedEntity does (display text, full date,
+// month/year or year)
+function formatDatingValue(d, locale) {
+    return formatDating(d, locale);
+}
 function isPeriodInterval(value) {
     return value.$metadata.$type.name === 'PeriodInterval';
 }
@@ -272,4 +287,3 @@ function formattedEntity(locale, e) {
         .forEach((x) => (result[x[0]] = x[1]));
     return Object.assign({ $metadata: e.$metadata }, result);
 }
-exports.formattedEntity = formattedEntity;

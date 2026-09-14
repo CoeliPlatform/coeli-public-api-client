@@ -1,5 +1,5 @@
 import { AcceptedLanguage } from './coeliApi';
-declare type PrimitiveValueMetadata = {
+type PrimitiveValueMetadata = {
     $type: {
         $type: PrimitiveValueType;
         name: string;
@@ -12,20 +12,20 @@ interface WithValue<V> {
 interface HasProperties {
     [name: string]: any;
 }
-declare type PrimitiveValueType = 'ValueType';
+type PrimitiveValueType = 'ValueType';
 interface ReferenceMetadata {
     $type: {
         $type: string;
         references: string;
     };
 }
-declare type Token = WithValue<string>;
+type Token = WithValue<string>;
 interface PartialReference {
     href: string;
     label?: Token;
     $metadata: ReferenceMetadata;
 }
-declare type Reference = HasProperties & PartialReference;
+type Reference = HasProperties & PartialReference;
 interface ReverseReference {
     entityName: string;
     propertyName: string;
@@ -52,9 +52,19 @@ interface EntityMetadata {
     slug: string;
     recordLists: any[];
 }
-declare type PartialEntity = {
+type PartialEntity = {
     $metadata: EntityMetadata;
 };
-export declare type Entity = PartialEntity & HasProperties;
+export type Entity = PartialEntity & HasProperties;
+export declare function formatIsoDateText(text: string, locale: AcceptedLanguage): string | undefined;
+export declare function formatDatingValue(d: {
+    year: number;
+    month?: number;
+    day?: number;
+    bc: boolean;
+    display?: string;
+    uncertaintyBefore?: string;
+    uncertaintyAfter?: string;
+}, locale: AcceptedLanguage): string;
 export declare function formattedEntity(locale: AcceptedLanguage, e: Entity): Entity;
 export {};

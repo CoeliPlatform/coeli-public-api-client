@@ -8,6 +8,11 @@ import {
   FacetMode,
 } from './model';
 import { Entity } from './formatUtils';
+import {
+  formattedPublicApiControlledSearch,
+  formattedPublicApiEntity,
+  formattedPublicApiSearch,
+} from './publicApiFormat';
 
 export type AcceptedLanguage = 'es' | 'ca' | 'en' | 'fr';
 
@@ -67,7 +72,7 @@ export class CoeliApi {
       `/${entity}/search`,
       language,
       'POST',
-      (x: ControlledSearchResponse) => x,
+      formattedPublicApiControlledSearch,
       search
     );
   };
@@ -101,11 +106,8 @@ export class CoeliApi {
       GetSearchResponse<Entity>,
       GetSearchResponse<Entity>
     >(partialUrl, language, 'GET', (x) => x);
-    // coeliFetch resolves undefined on request errors
-    if (!getSearchResponse) return undefined;
-    // api.coeli.cat already returns plain values, no formatting needed
     return mapFunction({
-      ...getSearchResponse,
+      ...formattedPublicApiSearch(language, getSearchResponse),
       url:
         '/' + controlledSearchResponse.self.href.split('/').slice(3).join('/'),
     });
@@ -195,7 +197,7 @@ export class CoeliApi {
       `/${entity}/slugs/${slug}`,
       language,
       'GET',
-      (e) => mapFunction(e)
+      (e) => mapFunction(formattedPublicApiEntity(language, e))
     );
   };
   getEntityById = async <T>(
@@ -208,7 +210,7 @@ export class CoeliApi {
       `/${entity}/${id}`,
       language,
       'GET',
-      (e) => mapFunction(e)
+      (e) => mapFunction(formattedPublicApiEntity(language, e))
     );
   };
   getEntities = async <T>(
@@ -216,15 +218,37 @@ export class CoeliApi {
     entity: string,
     mapFunction: (ce: Entity) => T
   ): Promise<GetResponse<T>> => {
+    // api.coeli.cat has no GET /<entity>/ listing; app.coeli.cat answered it
+    // with the first page of all entities, last updated first, without
+    // original search nor sort conditions
+    const controlledSearchResponse = await this.createControlledSearch(
+      language,
+      entity,
+      {
+        conditions: [],
+        sortCondition: {
+          sort: [{ name: '$metadata.updatedAt', order: 'DESC' }],
+          group: [],
+        },
+      }
+    );
     const coeliEntityGetResponse = await this.coeliFetch<
-      GetResponse<Entity>,
+      GetSearchResponse<Entity>,
       GetResponse<T>
-    >(`/${entity}/`, language, 'GET', (x: GetResponse<Entity>) => {
-      return {
-        ...x,
-        entities: x.entities.map((e) => mapFunction(e as Entity)),
-      };
-    });
+    >(
+      `/${entity}/search/${controlledSearchResponse.id}?limit=25&offset=0`,
+      language,
+      'GET',
+      (x) => {
+        const response = formattedPublicApiSearch(language, x);
+        return {
+          ...response,
+          originalSearch: null,
+          entities: response.entities.map(mapFunction),
+          sortConditions: { sort: [], group: [] },
+        };
+      }
+    );
     return coeliEntityGetResponse;
   };
 }

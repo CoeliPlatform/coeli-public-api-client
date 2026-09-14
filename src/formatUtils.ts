@@ -438,6 +438,34 @@ interface PeriodInterval {
   until: Reference;
 }
 
+// Formats an ISO date text (yyyy-mm-dd) the same way formattedEntity does,
+// or returns undefined when the text is not an ISO date
+export function formatIsoDateText(
+  text: string,
+  locale: AcceptedLanguage
+): string | undefined {
+  return isIsoDate(text)
+    ? formatDate(fromIsoDate(text) as CoeliDate, locale)
+    : undefined;
+}
+
+// Formats a dating the same way formattedEntity does (display text, full date,
+// month/year or year)
+export function formatDatingValue(
+  d: {
+    year: number;
+    month?: number;
+    day?: number;
+    bc: boolean;
+    display?: string;
+    uncertaintyBefore?: string;
+    uncertaintyAfter?: string;
+  },
+  locale: AcceptedLanguage
+): string {
+  return formatDating(d as Dating, locale);
+}
+
 function isPeriodInterval(value: any): value is PeriodInterval {
   return value.$metadata.$type.name === 'PeriodInterval';
 }
