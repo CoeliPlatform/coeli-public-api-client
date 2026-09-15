@@ -127,6 +127,10 @@ function formatMetadata(m: any): any {
     },
     updatedAt: m.updatedAt,
     publishedAt: m.publishedAt,
+    // api.coeli.cat only returns published entities and no backoffice data
+    published: true,
+    pendingToValidate: false,
+    recordLists: [],
     reverseReferences: [],
     slug: m.slug,
   };
@@ -144,7 +148,8 @@ function valueTypeName(value: any): string {
   if (typeof value === 'number') {
     return Number.isInteger(value) ? 'Integral' : 'Decimal';
   }
-  return 'Token';
+  // app.coeli.cat typed text facet values as TokenNl
+  return 'TokenNl';
 }
 
 function formatFacet(facet: any): Facet {

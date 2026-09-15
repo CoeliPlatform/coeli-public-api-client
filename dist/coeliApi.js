@@ -56,6 +56,8 @@ class CoeliApi {
                     ? `limit=${page.limit}&offset=${page.offset}`
                     : 'limit=25&offset=0'}`}${facetModes ? '&facetMode=' + facetModes.join(',') : ''}`;
             const getSearchResponse = yield this.coeliFetch(partialUrl, language, 'GET', (x) => x);
+            if (!getSearchResponse)
+                return undefined;
             return mapFunction(Object.assign(Object.assign({}, (0, publicApiFormat_1.formattedPublicApiSearch)(language, getSearchResponse)), { url: '/' + controlledSearchResponse.self.href.split('/').slice(3).join('/') }));
         });
         this.createAndGetControlledSearch = (language, entity, search, mapFunction, facets, page, facetModes) => __awaiter(this, void 0, void 0, function* () {

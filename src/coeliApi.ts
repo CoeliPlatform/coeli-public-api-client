@@ -106,6 +106,7 @@ export class CoeliApi {
       GetSearchResponse<Entity>,
       GetSearchResponse<Entity>
     >(partialUrl, language, 'GET', (x) => x);
+    if (!getSearchResponse) return undefined;
     return mapFunction({
       ...formattedPublicApiSearch(language, getSearchResponse),
       url:
