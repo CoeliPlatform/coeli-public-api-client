@@ -56,6 +56,7 @@ type PartialEntity = {
     $metadata: EntityMetadata;
 };
 export type Entity = PartialEntity & HasProperties;
+export declare function formatNumber(n: number, locale: AcceptedLanguage, maxDecimals: number, minDecimals?: number): string;
 export declare function formatIsoDateText(text: string, locale: AcceptedLanguage): string | undefined;
 export declare function formatDatingValue(d: {
     year: number;

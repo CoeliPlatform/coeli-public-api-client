@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.formatNumber = formatNumber;
 exports.formatIsoDateText = formatIsoDateText;
 exports.formatDatingValue = formatDatingValue;
 exports.formattedEntity = formattedEntity;

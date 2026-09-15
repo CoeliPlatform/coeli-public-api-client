@@ -317,7 +317,7 @@ function isCoeliDate(value: any): value is CoeliDate {
   );
 }
 
-function formatNumber(
+export function formatNumber(
   n: number,
   locale: AcceptedLanguage,
   maxDecimals: number,

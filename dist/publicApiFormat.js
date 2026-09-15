@@ -51,6 +51,13 @@ function formatValue(locale, v) {
         const date = (0, formatUtils_1.formatIsoDateText)(v, locale);
         return date === undefined ? v : date;
     }
+    // app.coeli.cat numbers were formatted with formatNumber: 2 decimals for
+    // Decimal, 0 for Integral/AutoNumeric, plus the unit. api.coeli.cat only
+    // returns the number, so integer values get 0 decimals, the rest 2, and
+    // there is no unit
+    if (typeof v === 'number') {
+        return (0, formatUtils_1.formatNumber)(v, locale, Number.isInteger(v) ? 0 : 2);
+    }
     if (typeof v !== 'object')
         return v;
     if (Array.isArray(v))
@@ -115,8 +122,9 @@ function valueTypeName(value) {
     return 'Token';
 }
 function formatFacet(facet) {
-    const v = facet.value || {};
-    if (typeof v.href === 'string') {
+    // References come as { href, label }, primitive values as the plain value
+    const v = facet.value;
+    if (v && typeof v.href === 'string') {
         return {
             value: {
                 href: v.href,
@@ -133,9 +141,9 @@ function formatFacet(facet) {
     }
     return {
         value: {
-            value: v.value,
+            value: v,
             $metadata: {
-                $type: { $type: 'ValueType', name: valueTypeName(v.value) },
+                $type: { $type: 'ValueType', name: valueTypeName(v) },
             },
         },
         count: facet.count,

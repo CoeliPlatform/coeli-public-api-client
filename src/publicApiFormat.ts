@@ -1,5 +1,10 @@
 import { AcceptedLanguage } from './coeliApi';
-import { Entity, formatDatingValue, formatIsoDateText } from './formatUtils';
+import {
+  Entity,
+  formatDatingValue,
+  formatIsoDateText,
+  formatNumber,
+} from './formatUtils';
 import {
   ControlledSearchResponse,
   Facet,
@@ -71,6 +76,13 @@ function formatValue(locale: AcceptedLanguage, v: any): any {
     const date = formatIsoDateText(v, locale);
     return date === undefined ? v : date;
   }
+  // app.coeli.cat numbers were formatted with formatNumber: 2 decimals for
+  // Decimal, 0 for Integral/AutoNumeric, plus the unit. api.coeli.cat only
+  // returns the number, so integer values get 0 decimals, the rest 2, and
+  // there is no unit
+  if (typeof v === 'number') {
+    return formatNumber(v, locale, Number.isInteger(v) ? 0 : 2);
+  }
   if (typeof v !== 'object') return v;
   if (Array.isArray(v)) return v.map((item) => formatValue(locale, item));
   if (isMedia(v)) {
@@ -136,8 +148,9 @@ function valueTypeName(value: any): string {
 }
 
 function formatFacet(facet: any): Facet {
-  const v = facet.value || {};
-  if (typeof v.href === 'string') {
+  // References come as { href, label }, primitive values as the plain value
+  const v = facet.value;
+  if (v && typeof v.href === 'string') {
     return {
       value: {
         href: v.href,
@@ -154,9 +167,9 @@ function formatFacet(facet: any): Facet {
   }
   return {
     value: {
-      value: v.value,
+      value: v,
       $metadata: {
-        $type: { $type: 'ValueType', name: valueTypeName(v.value) },
+        $type: { $type: 'ValueType', name: valueTypeName(v) },
       },
     },
     count: facet.count,
