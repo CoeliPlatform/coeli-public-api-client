@@ -1,6 +1,6 @@
 import { ControlledSearch, ControlledSearchResponse, GetResponse, GetSearchResponse, Page, FacetMode } from './model';
 import { Entity } from './formatUtils';
-export declare type AcceptedLanguage = 'es' | 'ca' | 'en' | 'fr';
+export type AcceptedLanguage = 'es' | 'ca' | 'en' | 'fr';
 export declare class CoeliApi {
     constructor(tenant: string, token: string);
     private readonly tenant;
